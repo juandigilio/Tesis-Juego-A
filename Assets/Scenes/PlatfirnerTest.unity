@@ -958,6 +958,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerManager
   _players:
   - {fileID: 365087580}
+  - {fileID: 1256532032}
 --- !u!1 &557805607 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3531608655804087334, guid: 63dccfeee6f707d4c9b6dac1024edeb3, type: 3}
