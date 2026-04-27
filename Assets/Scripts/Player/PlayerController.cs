@@ -3,10 +3,9 @@ using UnityEngine.InputSystem;
 
 
 [RequireComponent(typeof(PlayerView))]
+[RequireComponent (typeof(PlayerInput))]
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private InputActionReference _moveIAR;
-    [SerializeField] private InputActionReference _jumpIAR;
     [SerializeField] private PlayerSettings _settings;
 
     [SerializeField] private Transform _groundCheck;
@@ -30,32 +29,18 @@ public class PlayerController : MonoBehaviour
             null;
     }
 
-    private void OnEnable()
-    {
-        _moveIAR.action.performed += OnMove;
-        _moveIAR.action.canceled += OnMove;
-
-        _jumpIAR.action.performed += OnJump;
-    }
-
-    private void OnDisable()
-    {
-        _moveIAR.action.performed -= OnMove;
-        _moveIAR.action.canceled -= OnMove;
-
-        _jumpIAR.action.performed -= OnJump;
-    }
-
-    private void OnMove(InputAction.CallbackContext context)
+    public void Move(InputAction.CallbackContext context)
     {
         Vector2 input = context.ReadValue<Vector2>();
-        input.y = 0;
         _model.SetMoveXInput(input.x);
     }
 
-    private void OnJump(InputAction.CallbackContext context)
+    public void Jump(InputAction.CallbackContext context)
     {
-        _model.RequestJump();
+        if (context.performed)
+        {
+            _model.RequestJump();
+        }
     }
 
     private void Update()
