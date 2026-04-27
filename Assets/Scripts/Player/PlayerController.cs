@@ -6,9 +6,14 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private InputActionReference _moveIAR;
+    [SerializeField] private InputActionReference _jumpIAR;
     [SerializeField] private PlayerSettings _settings;
-    private ICoopCameraService _camService;
 
+    [SerializeField] private Transform _groundCheck;
+    [SerializeField] private float _groundCheckRadius = 0.1f;
+    [SerializeField] private LayerMask _groundLayer;
+
+    private ICoopCameraService _camService;
     private PlayerModel _model;
     private PlayerView _view;
 
@@ -29,12 +34,16 @@ public class PlayerController : MonoBehaviour
     {
         _moveIAR.action.performed += OnMove;
         _moveIAR.action.canceled += OnMove;
+
+        _jumpIAR.action.performed += OnJump;
     }
 
     private void OnDisable()
     {
         _moveIAR.action.performed -= OnMove;
         _moveIAR.action.canceled -= OnMove;
+
+        _jumpIAR.action.performed -= OnJump;
     }
 
     private void OnMove(InputAction.CallbackContext context)
@@ -42,6 +51,18 @@ public class PlayerController : MonoBehaviour
         Vector2 input = context.ReadValue<Vector2>();
         input.y = 0;
         _model.SetMoveXInput(input.x);
+    }
+
+    private void OnJump(InputAction.CallbackContext context)
+    {
+        _model.RequestJump();
+    }
+
+    private void Update()
+    {
+        bool grounded = Physics2D.OverlapCircle(_groundCheck.position, _groundCheckRadius, _groundLayer);
+
+        _model.SetGrounded(grounded);
     }
 
     private void FixedUpdate()
@@ -59,5 +80,18 @@ public class PlayerController : MonoBehaviour
         }
 
         _view.ApplyHVelocity(xVel);
+
+        if (_model.JumpRequested)
+        {
+            _view.ApplyJumpForce(_model.Settings.jumpForce);
+            _model.ConsumeJump();
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (_groundCheck == null) return;
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(_groundCheck.position, _groundCheckRadius);
     }
 }

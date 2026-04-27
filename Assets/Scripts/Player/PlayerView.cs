@@ -13,4 +13,9 @@ public class PlayerView : MonoBehaviour
         vel.x = xVel;
         _rb.linearVelocity = vel;
     }
+
+    public void ApplyJumpForce(float jumpForce)
+    {
+        _rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+    }
 }
