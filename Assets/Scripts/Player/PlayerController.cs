@@ -15,11 +15,13 @@ public class PlayerController : MonoBehaviour
     private ICoopCameraService _camService;
     private PlayerModel _model;
     private PlayerView _view;
+    private Collider2D _ownCollider;
 
     private void Awake()
     {
         _model = new PlayerModel(_settings);
         _view = GetComponent<PlayerView>();
+        _ownCollider = GetComponent<Collider2D>();
 
         if (_view.Rb == null)
             _view.Rb = GetComponent<Rigidbody2D>();
@@ -45,7 +47,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        bool grounded = Physics2D.OverlapCircle(_groundCheck.position, _groundCheckRadius, _groundLayer);
+        var hits = Physics2D.OverlapCircleAll(_groundCheck.position, _groundCheckRadius, _groundLayer);
+        bool grounded = System.Array.Exists(hits, col => col != _ownCollider);
 
         _model.SetGrounded(grounded);
     }
