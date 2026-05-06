@@ -11,8 +11,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+    
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Unity - Activate
+        uses: game-ci/unity-activate@v2.0.0
 
       - name: Cache Library
         uses: actions/cache@v4
