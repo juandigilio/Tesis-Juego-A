@@ -2,7 +2,7 @@ name: Create build Windows
 
 env:
   itchio_channel: windows
-  BuildName: Aeterna ${{github.event.release.tag_name}}
+  BuildName: GameA ${{github.event.release.tag_name}}
   ReleaseBody: ${{github.event.release.body}}
 
 on:
@@ -42,7 +42,7 @@ jobs:
           path: build/StandaloneWindows
   deploy:
     needs: buildForWindows
-    name: Deploy to Itch.io
+    name: Deploy
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -55,23 +55,4 @@ jobs:
         with:
           name: ${{ env.BuildName }}
           path: build/StandaloneWindows
-      - name: Upload Build to itch.io project
-        uses: robpc/itchio-upload-action@v1
-        with:
-          path: build/StandaloneWindows
-          project: ${{ secrets.ITCHIO_PROJECT }}
-          channel: ${{ env.itchio_channel }}
-          version: ${{ github.event.release.tag_name }}
-          api-key: ${{ secrets.ITCHIO_API_KEY }}
-  discordMessage:
-    needs: deploy
-    name: Discord Notification
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@master
-    - name: Send Discord message
-      uses: appleboy/discord-action@master
-      with:
-        webhook_id: ${{secrets.WEBHOOK_ID}}
-        webhook_token: ${{secrets.WEBHOOK_TOKEN}}
-        message: "@here ${{ env.BuildName}} is out on https://michibrujas.itch.io/aeterna \n ${{env.ReleaseBody}}"
+      
