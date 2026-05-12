@@ -1,7 +1,6 @@
 name: Create build Windows
 
 env:
-  itchio_channel: windows
   BuildName: GameA ${{github.event.release.tag_name}}
   ReleaseBody: ${{github.event.release.body}}
 
@@ -18,8 +17,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          lfs: false
+        
       - uses: actions/cache@v4
         with:
           path: Library
@@ -49,7 +47,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          lfs: false
       - name: Download Build Artifact
         uses: actions/download-artifact@v4
         with:
